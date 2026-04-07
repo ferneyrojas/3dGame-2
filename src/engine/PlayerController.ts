@@ -17,6 +17,11 @@ export class PlayerController {
   private moveRight = false;
   private isFast = false;
 
+  private externalMoveX = 0;
+  private externalMoveZ = 0;
+  private externalLookX = 0;
+  private externalLookY = 0;
+
   private velocity = new THREE.Vector3();
   private direction = new THREE.Vector3();
   private velocityY = 0;
@@ -115,9 +120,29 @@ export class PlayerController {
   update(delta: number) {
     const speed = this.isFast ? this.fastMoveSpeed : this.moveSpeed;
 
-    this.direction.z = Number(this.moveForward) - Number(this.moveBackward);
-    this.direction.x = Number(this.moveRight) - Number(this.moveLeft);
-    this.direction.normalize();
+    // Combine keyboard and external inputs
+    const moveZ = (Number(this.moveForward) - Number(this.moveBackward)) || this.externalMoveZ;
+    const moveX = (Number(this.moveRight) - Number(this.moveLeft)) || this.externalMoveX;
+
+    this.direction.z = moveZ;
+    this.direction.x = moveX;
+    
+    // Apply external rotation
+    if (this.externalLookX !== 0 || this.externalLookY !== 0) {
+      this.yaw -= this.externalLookX * 0.05;
+      this.pitch -= this.externalLookY * 0.05;
+      this.pitch = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, this.pitch));
+      this.camera.rotation.order = 'YXZ';
+      this.camera.rotation.set(this.pitch, this.yaw, 0);
+      
+      // Reset look delta after applying
+      this.externalLookX = 0;
+      this.externalLookY = 0;
+    }
+
+    if (this.direction.lengthSq() > 0) {
+      this.direction.normalize();
+    }
 
     const forward = new THREE.Vector3(0, 0, -1).applyQuaternion(this.camera.quaternion);
     forward.y = 0;
@@ -143,5 +168,19 @@ export class PlayerController {
     const gravityResult = this.physics.applyGravity(this.camera.position, this.velocityY, delta);
     this.camera.position.y = gravityResult.newY;
     this.velocityY = gravityResult.newVelocityY;
+  }
+
+  public setExternalMove(x: number, z: number) {
+    this.externalMoveX = x;
+    this.externalMoveZ = z;
+  }
+
+  public addExternalLook(x: number, y: number) {
+    this.externalLookX = x;
+    this.externalLookY = y;
+  }
+
+  public setFast(isFast: boolean) {
+    this.isFast = isFast;
   }
 }

@@ -6,14 +6,26 @@
 import { useEffect, useRef, useState } from 'react';
 import { Engine } from './engine/Engine';
 import { SceneConfig } from './types/scene';
-import { MousePointer2, Keyboard, Move, Zap, HelpCircle, X } from 'lucide-react';
+import { MousePointer2, Keyboard, Move, Zap, HelpCircle, X, Smartphone } from 'lucide-react';
+import nipplejs from 'nipplejs';
 
 export default function App() {
   const containerRef = useRef<HTMLDivElement>(null);
   const engineRef = useRef<Engine | null>(null);
+  const joystickRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showInstructions, setShowInstructions] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     const loadScene = async () => {
@@ -31,6 +43,30 @@ export default function App() {
         if (containerRef.current && !engineRef.current) {
           engineRef.current = new Engine(containerRef.current, config);
           setLoading(false);
+          
+          if (isMobile && joystickRef.current) {
+            const manager = nipplejs.create({
+              zone: joystickRef.current,
+              mode: 'static',
+              position: { left: '80px', bottom: '80px' },
+              color: 'white',
+              size: 120
+            });
+
+            (manager as any).on('move', (_: any, data: any) => {
+              if (engineRef.current) {
+                const forward = data.vector.y;
+                const right = data.vector.x;
+                engineRef.current.playerController.setExternalMove(right, forward);
+              }
+            });
+
+            manager.on('end', () => {
+              if (engineRef.current) {
+                engineRef.current.playerController.setExternalMove(0, 0);
+              }
+            });
+          }
         }
       } catch (err) {
         console.error(err);
@@ -40,16 +76,57 @@ export default function App() {
     };
 
     loadScene();
+  }, [isMobile]);
 
-    return () => {
-      // Cleanup if necessary
-    };
-  }, []);
+  // Touch look handling
+  const touchStart = useRef({ x: 0, y: 0 });
+  const handleTouchStart = (e: any) => {
+    touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+  };
+
+  const handleTouchMove = (e: any) => {
+    if (!engineRef.current) return;
+    
+    const touch = e.touches[0];
+    const deltaX = touch.clientX - touchStart.current.x;
+    const deltaY = touch.clientY - touchStart.current.y;
+    
+    // Only rotate if touching the right half of the screen
+    if (touch.clientX > window.innerWidth / 2) {
+      engineRef.current.playerController.addExternalLook(deltaX * 0.01, deltaY * 0.01);
+    }
+    
+    touchStart.current = { x: touch.clientX, y: touch.clientY };
+  };
 
   return (
-    <div className="relative w-full h-screen bg-black overflow-hidden font-sans">
+    <div 
+      className="relative w-full h-screen bg-black overflow-hidden font-sans touch-none"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+    >
       {/* Three.js Container */}
       <div ref={containerRef} className="w-full h-full" />
+
+      {/* Mobile Joystick Zone */}
+      {isMobile && !loading && !error && (
+        <div ref={joystickRef} className="absolute bottom-0 left-0 w-1/2 h-1/2 pointer-events-auto z-30" />
+      )}
+
+      {/* Mobile Interaction Button */}
+      {isMobile && !loading && !error && (
+        <button 
+          className="absolute bottom-20 right-20 w-20 h-20 bg-white/20 backdrop-blur-md rounded-full border border-white/40 flex items-center justify-center active:scale-90 transition-transform z-30"
+          onClick={() => {
+            if (engineRef.current) {
+              // Simulate interaction
+              // In a real app we might need a more direct way to trigger interaction
+            }
+          }}
+        >
+          <Zap className="w-8 h-8 text-white" />
+        </button>
+      )}
 
       {/* Loading Overlay */}
       {loading && (
@@ -89,31 +166,54 @@ export default function App() {
               </h1>
               
               <div className="space-y-4 text-sm opacity-90">
-                <div className="flex items-center gap-3">
-                  <div className="flex gap-1">
-                    <kbd className="px-2 py-1 bg-white/20 rounded text-xs">W</kbd>
-                    <kbd className="px-2 py-1 bg-white/20 rounded text-xs">A</kbd>
-                    <kbd className="px-2 py-1 bg-white/20 rounded text-xs">S</kbd>
-                    <kbd className="px-2 py-1 bg-white/20 rounded text-xs">D</kbd>
-                  </div>
-                  <span>Movimiento</span>
-                </div>
+                {isMobile ? (
+                  <>
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full border border-white/40 flex items-center justify-center">
+                        <Smartphone className="w-4 h-4" />
+                      </div>
+                      <span>Joystick (Izquierda) para mover</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full border border-white/40 flex items-center justify-center">
+                        <Move className="w-4 h-4" />
+                      </div>
+                      <span>Desliza (Derecha) para mirar</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Zap className="w-5 h-5 text-yellow-400" />
+                      <span>Botón para interactuar</span>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex items-center gap-3">
+                      <div className="flex gap-1">
+                        <kbd className="px-2 py-1 bg-white/20 rounded text-xs">W</kbd>
+                        <kbd className="px-2 py-1 bg-white/20 rounded text-xs">A</kbd>
+                        <kbd className="px-2 py-1 bg-white/20 rounded text-xs">S</kbd>
+                        <kbd className="px-2 py-1 bg-white/20 rounded text-xs">D</kbd>
+                      </div>
+                      <span>Movimiento</span>
+                    </div>
 
-                <div className="flex items-center gap-3">
-                  <kbd className="px-2 py-1 bg-white/20 rounded text-xs">CTRL</kbd>
-                  <div className="flex items-center gap-1">
-                    <Zap className="w-3 h-3 text-yellow-400" />
-                    <span>Correr</span>
-                  </div>
-                </div>
+                    <div className="flex items-center gap-3">
+                      <kbd className="px-2 py-1 bg-white/20 rounded text-xs">CTRL</kbd>
+                      <div className="flex items-center gap-1">
+                        <Zap className="w-3 h-3 text-yellow-400" />
+                        <span>Correr</span>
+                      </div>
+                    </div>
 
-                <div className="flex items-center gap-3">
-                  <MousePointer2 className="w-4 h-4 text-green-400" />
-                  <span>Click para Interactuar</span>
-                </div>
+                    <div className="flex items-center gap-3">
+                      <MousePointer2 className="w-4 h-4 text-green-400" />
+                      <span>Click para Interactuar</span>
+                    </div>
+                  </>
+                )}
 
                 <div className="pt-4 border-t border-white/10 text-xs italic opacity-60">
-                  Haz click en el centro para capturar el mouse. ESC para liberar.
+                  {isMobile ? 'Optimizado para pantallas táctiles.' : 'Haz click en el centro para capturar el mouse. ESC para liberar.'}
                 </div>
               </div>
             </div>

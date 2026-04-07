@@ -19,7 +19,7 @@ export class Engine {
 
   private eventManager: EventManager;
   private physicsSystem: PhysicsSystem;
-  private playerController: PlayerController;
+  public playerController: PlayerController;
   private objectManager: ObjectManager;
 
   private config: SceneConfig;
