@@ -1,1 +1,12 @@
 @import "tailwindcss";
+
+/* NippleJS Joystick Styles */
+.nipple .back {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 2px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.nipple .front {
+  background: rgba(255, 255, 255, 0.4) !important;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}

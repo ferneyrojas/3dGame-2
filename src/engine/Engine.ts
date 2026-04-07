@@ -118,6 +118,10 @@ export class Engine {
     });
   }
 
+  public triggerInteraction() {
+    this.objectManager.handleInteraction(this.camera, this);
+  }
+
   private onWindowResize() {
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.camera.updateProjectionMatrix();

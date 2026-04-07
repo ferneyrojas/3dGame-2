@@ -17,6 +17,7 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [showInstructions, setShowInstructions] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const [isFast, setIsFast] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -110,21 +111,41 @@ export default function App() {
 
       {/* Mobile Joystick Zone */}
       {isMobile && !loading && !error && (
-        <div ref={joystickRef} className="absolute bottom-0 left-0 w-1/2 h-1/2 pointer-events-auto z-30" />
+        <div ref={joystickRef} className="absolute bottom-0 left-0 w-1/2 h-1/2 pointer-events-auto z-30">
+          {/* Visual guide for the joystick area */}
+          <div className="absolute left-[80px] bottom-[80px] -translate-x-1/2 translate-y-1/2 w-24 h-24 rounded-full border-2 border-white/20 bg-white/5 pointer-events-none flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full border border-white/10 bg-white/5" />
+          </div>
+        </div>
       )}
 
-      {/* Mobile Interaction Button */}
+      {/* Mobile Sprint Button (Left Side) */}
       {isMobile && !loading && !error && (
         <button 
-          className="absolute bottom-20 right-20 w-20 h-20 bg-white/20 backdrop-blur-md rounded-full border border-white/40 flex items-center justify-center active:scale-90 transition-transform z-30"
+          className={`absolute bottom-48 left-8 w-14 h-14 rounded-full border border-white/30 flex items-center justify-center transition-all z-40 active:scale-90 ${isFast ? 'bg-yellow-500/40 border-yellow-400/60' : 'bg-white/10'}`}
           onClick={() => {
+            const newFast = !isFast;
+            setIsFast(newFast);
             if (engineRef.current) {
-              // Simulate interaction
-              // In a real app we might need a more direct way to trigger interaction
+              engineRef.current.playerController.setFast(newFast);
             }
           }}
         >
-          <Zap className="w-8 h-8 text-white" />
+          <Zap className={`w-6 h-6 ${isFast ? 'text-yellow-200' : 'text-white'}`} />
+        </button>
+      )}
+
+      {/* Mobile Interaction Button (Right Side) */}
+      {isMobile && !loading && !error && (
+        <button 
+          className="absolute bottom-20 right-20 w-20 h-20 bg-white/20 backdrop-blur-md rounded-full border border-white/40 flex items-center justify-center active:scale-90 transition-transform z-30 shadow-lg"
+          onClick={() => {
+            if (engineRef.current) {
+              engineRef.current.triggerInteraction();
+            }
+          }}
+        >
+          <MousePointer2 className="w-8 h-8 text-white" />
         </button>
       )}
 
@@ -182,7 +203,11 @@ export default function App() {
                     </div>
                     <div className="flex items-center gap-3">
                       <Zap className="w-5 h-5 text-yellow-400" />
-                      <span>Botón para interactuar</span>
+                      <span>Botón de rayo (Izquierda) para Correr</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <MousePointer2 className="w-5 h-5 text-green-400" />
+                      <span>Botón de puntero (Derecha) para Interactuar</span>
                     </div>
                   </>
                 ) : (
