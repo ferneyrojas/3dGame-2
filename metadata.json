@@ -1,0 +1,5 @@
+{
+  "name": "JSON 3D Game Engine",
+  "description": "A configurable 3D game engine powered by Three.js and JSON scene definitions.",
+  "requestFramePermissions": []
+}

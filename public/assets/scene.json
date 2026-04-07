@@ -1,0 +1,45 @@
+{
+  "player": {
+    "startPosition": { "x": 0, "y": 2, "z": 5 },
+    "height": 2,
+    "moveSpeed": 7.5,
+    "fastMoveSpeed": 15.0
+  },
+  "world": {
+    "size": {
+      "width": 250,
+      "depth": 250
+    },
+    "gravity": 9.8,
+    "skyColor": "#87CEEB",
+    "groundColor": "#333333",
+    "hdri": "../assets/sky.hdr"
+  },
+  "objects": [
+    {
+      "id": "scena1",
+      "type": "fbx",
+      "name": "scena1",
+      "position": { "x": 0, "y": 0, "z": 0 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": { "x": 0.035, "y": 0.035, "z": 0.035 },
+      "visible": true,
+      "isSolid": true,
+      "collider": "mesh",
+      "modelPath": "../assets/objs/Low_poly_scene.fbx"
+    },    {
+      "id": "tree1",
+      "type": "obj",
+      "name": "tree1",
+      "position": { "x": 0, "y": 0, "z": 5 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "color": "#804000",
+      "visible": true,
+      "isSolid": true,
+      "collider": "mesh",
+      "onClick": "rotateSelf",
+      "modelPath": "../assets/objs/tree.obj"
+    }
+  ]
+}

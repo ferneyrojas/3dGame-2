@@ -1,0 +1,159 @@
+{
+  "player": {
+    "startPosition": { "x": 0, "y": 1.7, "z": 5 },
+    "height": 1.7,
+    "moveSpeed": 5.0,
+    "fastMoveSpeed": 10.0
+  },
+  "world": {
+    "size": {
+      "width": 100,
+      "depth": 100
+    },
+    "gravity": 9.8,
+    "skyColor": "#87CEEB",
+    "groundColor": "#333333",
+    "hdri": "../assets/sky.hdr"
+  },
+  "objects": [
+    {
+      "id": "ground",
+      "type": "plane",
+      "name": "Ground",
+      "position": { "x": 0, "y": 0, "z": 0 },
+      "rotation": { "x": -1.57, "y": 0, "z": 0 },
+      "scale": { "x": 100, "y": 100, "z": 1 },
+      "color": "#444444",
+      "texture": "../assets/textures/grass.jpg",
+      "visible": true,
+      "isSolid": true,
+      "collider": "mesh"
+    },
+    {
+      "id": "box1",
+      "type": "box",
+      "name": "Interactive Box",
+      "position": { "x": 2, "y": 0.5, "z": -2 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "color": "#ff0000",
+      "visible": true,
+      "isSolid": true,
+      "onClick": "toggleVisibility"
+    },
+    {
+      "id": "box2",
+      "type": "box",
+      "name": "Moving Box",
+      "position": { "x": -2, "y": 0.5, "z": -2 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "color": "#00ff00",
+      "visible": true,
+      "isSolid": true,
+      "onClick": "rotateSelf"
+    },
+    {
+      "id": "tree1",
+      "type": "obj",
+      "name": "tree1",
+      "position": { "x": -5, "y": 0, "z": -5 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "color": "#804000",
+      "visible": true,
+      "isSolid": true,
+      "collider": "mesh",
+      "onClick": "rotateSelf",
+      "modelPath": "../assets/objs/tree.obj"
+    },
+    {
+      "id": "house",
+      "type": "obj",
+      "name": "house1",
+      "position": { "x": -25, "y": 0, "z": -25 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "visible": true,
+      "isSolid": true,
+      "collider": "mesh",
+      "modelPath": "../assets/objs/house.obj"
+    },
+    {
+      "id": "city",
+      "type": "obj",
+      "name": "city",
+      "position": { "x": 30, "y": 0, "z": -30 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "visible": true,
+      "isSolid": true,
+      "collider": "mesh",
+      "modelPath": "../assets/objs/city.obj"
+    },   
+    {
+      "id": "laberint",
+      "type": "obj",
+      "name": "laberint",
+      "position": { "x": 20, "y": 0, "z": 20 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": { "x": 2, "y": 2, "z": 2 },
+      "visible": true,
+      "isSolid": true,
+      "collider": "mesh",
+      "modelPath": "../assets/objs/laberint-.obj"
+    },       
+       {
+      "id": "tree2",
+      "type": "obj",
+      "name": "tree2",
+      "position": { "x": -5, "y": 0, "z": 5 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": { "x": 1, "y": 1, "z": 1 },
+      "color": "#804000",
+      "visible": true,
+      "isSolid": true,
+      "collider": "mesh",
+      "onClick": "rotateSelf",
+      "texture": "../assets/objs/textures/grass0.jpg",
+      "modelPath": "../assets/objs/tree.obj"
+    }, 
+    {
+      "id": "mesa1",
+      "type": "glb",
+      "name": "mesa1",
+      "position": { "x": 5, "y": 0, "z": -10 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": { "x": 2.5, "y": 2.5, "z": 2.5 },
+      "visible": true,
+      "isSolid": true,
+      "collider": "mesh",
+      "modelPath": "../assets/objs/smallTable.glb"
+    }, 
+    {
+      "id": "scena1",
+      "type": "fbx",
+      "name": "scena1",
+      "position": { "x": 0, "y": -5, "z": 0 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": { "x": 0.15, "y": 0.15, "z": 0.15 },
+      "visible": true,
+      "isSolid": true,
+      "collider": "mesh",
+      "modelPath": "../assets/objs/Low_poly_scene.fbx"
+    },     
+    {
+      "id": "roca1",
+      "type": "obj",
+      "name": "roca1",
+      "position": { "x": -15, "y": 0, "z": -10 },
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "scale": { "x": 3, "y": 5, "z": 3 },
+      "visible": true,
+      "isSolid": true,
+      "collider": "mesh",
+      "texture": "../assets/objs/textures/Rock_4a.jpg",
+      "modelPath": "../assets/objs/Rock_4.obj"
+    }
+  ]
+}
