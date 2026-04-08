@@ -55,10 +55,9 @@ export default function App() {
             });
 
             (manager as any).on('move', (_: any, data: any) => {
-              if (engineRef.current) {
-                const forward = data.vector.y;
-                const right = data.vector.x;
-                engineRef.current.playerController.setExternalMove(right, forward);
+              if (engineRef.current && data.vector) {
+                // Pass raw joystick vector: x is horizontal, y is vertical
+                engineRef.current.playerController.setExternalMove(data.vector.x, data.vector.y);
               }
             });
 

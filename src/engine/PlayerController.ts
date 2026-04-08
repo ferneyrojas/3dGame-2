@@ -121,10 +121,13 @@ export class PlayerController {
     const speed = this.isFast ? this.fastMoveSpeed : this.moveSpeed;
 
     // Combine keyboard and external inputs
-    const moveZ = (Number(this.moveForward) - Number(this.moveBackward)) || this.externalMoveZ;
-    const moveX = (Number(this.moveRight) - Number(this.moveLeft)) || this.externalMoveX;
+    // Keyboard: moveForward is +1 (forward), moveBackward is -1 (backward)
+    // External: moveZ is from joystick (-1 to 1)
+    const moveZ = (Number(this.moveForward) - Number(this.moveBackward)) + this.externalMoveZ;
+    const moveX = (Number(this.moveRight) - Number(this.moveLeft)) + this.externalMoveX;
 
-    this.direction.z = moveZ;
+    // In our engine, forward is -Z, so we negate moveZ for the direction
+    this.direction.z = -moveZ;
     this.direction.x = moveX;
     
     // Apply external rotation
