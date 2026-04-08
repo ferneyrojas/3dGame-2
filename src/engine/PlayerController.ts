@@ -21,6 +21,8 @@ export class PlayerController {
   private externalMoveZ = 0;
   private externalLookX = 0;
   private externalLookY = 0;
+  private joystickLookX = 0;
+  private joystickLookY = 0;
 
   private velocity = new THREE.Vector3();
   private direction = new THREE.Vector3();
@@ -132,9 +134,12 @@ export class PlayerController {
     this.direction.x = moveX;
     
     // Apply external rotation
-    if (this.externalLookX !== 0 || this.externalLookY !== 0) {
-      this.yaw -= this.externalLookX * 0.2;
-      this.pitch -= this.externalLookY * 0.2;
+    const lookX = this.externalLookX + (this.joystickLookX * delta * 15);
+    const lookY = this.externalLookY + (this.joystickLookY * delta * 15);
+
+    if (lookX !== 0 || lookY !== 0) {
+      this.yaw -= lookX * 0.2;
+      this.pitch -= lookY * 0.2;
       this.pitch = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, this.pitch));
       this.camera.rotation.order = 'YXZ';
       this.camera.rotation.set(this.pitch, this.yaw, 0);
@@ -182,6 +187,11 @@ export class PlayerController {
   public addExternalLook(x: number, y: number) {
     this.externalLookX = x;
     this.externalLookY = y;
+  }
+
+  public setJoystickLook(x: number, y: number) {
+    this.joystickLookX = x;
+    this.joystickLookY = y;
   }
 
   public setFast(isFast: boolean) {

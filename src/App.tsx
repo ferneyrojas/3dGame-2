@@ -12,9 +12,11 @@ import nipplejs from 'nipplejs';
 export default function App() {
   const containerRef = useRef<HTMLDivElement>(null);
   const engineRef = useRef<Engine | null>(null);
-  const joystickRef = useRef<HTMLDivElement>(null);
+  const moveJoystickRef = useRef<HTMLDivElement>(null);
+  const lookJoystickRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(true);
   const [engineReady, setEngineReady] = useState(false);
+  const [joystickMode, setJoystickMode] = useState<'static' | 'dynamic'>('static');
   const [error, setError] = useState<string | null>(null);
   const [showInstructions, setShowInstructions] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
@@ -47,6 +49,10 @@ export default function App() {
           throw new Error(`No se pudo cargar el archivo: ${fileName}`);
         }
         const config: SceneConfig = await response.json();
+        
+        if (config.ui?.joystickMode) {
+          setJoystickMode(config.ui.joystickMode);
+        }
 
         if (containerRef.current && !engineRef.current) {
           engineRef.current = new Engine(containerRef.current, config);
@@ -65,56 +71,83 @@ export default function App() {
 
   // Handle Joystick initialization separately to ensure Ref is ready
   useEffect(() => {
-    let manager: any = null;
+    let moveManager: any = null;
+    let lookManager: any = null;
 
     console.log("Joystick Effect Check:", { 
       engineReady, 
       isMobile, 
-      hasJoystickRef: !!joystickRef.current, 
+      hasMoveRef: !!moveJoystickRef.current, 
+      hasLookRef: !!lookJoystickRef.current,
       hasEngineRef: !!engineRef.current 
     });
 
-    if (engineReady && isMobile && joystickRef.current && engineRef.current) {
-      console.log("Initializing NippleJS...");
+    if (engineReady && isMobile && engineRef.current) {
+      console.log("Initializing Dual Joysticks...");
       try {
-        manager = nipplejs.create({
-          zone: joystickRef.current,
-          mode: 'dynamic',
-          color: 'white',
-          size: 100,
-          threshold: 0.1,
-          catchDistance: 150
-        });
+        // Movement Joystick (Left)
+        if (moveJoystickRef.current) {
+          moveManager = nipplejs.create({
+            zone: moveJoystickRef.current,
+            mode: joystickMode,
+            position: joystickMode === 'static' ? { left: '80px', bottom: '80px' } : undefined,
+            color: 'white',
+            size: 100,
+            threshold: 0.1,
+            catchDistance: 150
+          });
 
-        console.log("NippleJS Manager Created successfully");
+          moveManager.on('move', (evt: any, data: any) => {
+            const moveData = data || evt.data;
+            if (engineRef.current && moveData && moveData.vector) {
+              engineRef.current.playerController.setExternalMove(moveData.vector.x, moveData.vector.y);
+            }
+          });
 
-        manager.on('move', (evt: any, data: any) => {
-          // Some versions of nipplejs pass data as second arg, others as evt.data
-          const moveData = data || evt.data;
-          
-          if (engineRef.current && moveData && moveData.vector) {
-            // NippleJS vector.y is positive when moving UP
-            // PlayerController expects positive for Forward
-            engineRef.current.playerController.setExternalMove(moveData.vector.x, moveData.vector.y);
-          }
-        });
+          moveManager.on('end', () => {
+            if (engineRef.current) {
+              engineRef.current.playerController.setExternalMove(0, 0);
+            }
+          });
+        }
 
-        manager.on('end', () => {
-          if (engineRef.current) {
-            engineRef.current.playerController.setExternalMove(0, 0);
-          }
-        });
+        // Look Joystick (Right)
+        if (lookJoystickRef.current) {
+          lookManager = nipplejs.create({
+            zone: lookJoystickRef.current,
+            mode: joystickMode,
+            position: joystickMode === 'static' ? { right: '80px', bottom: '80px' } : undefined,
+            color: 'white',
+            size: 100,
+            threshold: 0.1,
+            catchDistance: 150
+          });
+
+          lookManager.on('move', (evt: any, data: any) => {
+            const lookData = data || evt.data;
+            if (engineRef.current && lookData && lookData.vector) {
+              // NippleJS vector.y is positive when moving UP
+              // We want to rotate camera around X axis (pitch)
+              engineRef.current.playerController.setJoystickLook(lookData.vector.x, lookData.vector.y);
+            }
+          });
+
+          lookManager.on('end', () => {
+            if (engineRef.current) {
+              engineRef.current.playerController.setJoystickLook(0, 0);
+            }
+          });
+        }
       } catch (e) {
-        console.error("Error creating NippleJS manager:", e);
+        console.error("Error creating Dual Joysticks:", e);
       }
     }
 
     return () => {
-      if (manager) {
-        manager.destroy();
-      }
+      if (moveManager) moveManager.destroy();
+      if (lookManager) lookManager.destroy();
     };
-  }, [engineReady, isMobile]);
+  }, [engineReady, isMobile, joystickMode]);
 
   // Touch look handling
   const touchStart = useRef({ x: 0, y: 0 });
@@ -127,16 +160,8 @@ export default function App() {
   const handleTouchMove = (e: any) => {
     if (!engineRef.current || !e.touches || !e.touches[0]) return;
     
-    const touch = e.touches[0];
-    const deltaX = touch.clientX - touchStart.current.x;
-    const deltaY = touch.clientY - touchStart.current.y;
-    
-    // Only rotate if touching the right half of the screen
-    if (touch.clientX > window.innerWidth / 2) {
-      engineRef.current.playerController.addExternalLook(deltaX * 0.01, deltaY * 0.01);
-    }
-    
-    touchStart.current = { x: touch.clientX, y: touch.clientY };
+    // Manual touch rotation removed in favor of dual-stick controls
+    // touchStart.current = { x: touch.clientX, y: touch.clientY };
   };
 
   console.log("Rendering App State:", { isMobile, engineReady, loading, error });
@@ -150,12 +175,33 @@ export default function App() {
       {/* Three.js Container */}
       <div ref={containerRef} className="w-full h-full" />
 
-      {/* Mobile Joystick Zone */}
+      {/* Mobile Joystick Zones */}
       {isMobile && engineReady && !error && (
-        <div 
-          ref={joystickRef} 
-          className="absolute bottom-0 left-0 w-1/2 h-1/2 pointer-events-auto z-20" 
-        />
+        <>
+          {/* Movement Zone (Left) */}
+          <div 
+            ref={moveJoystickRef} 
+            className="absolute bottom-0 left-0 w-1/2 h-full pointer-events-auto z-20" 
+          >
+            {joystickMode === 'static' && (
+              <div className="absolute left-[80px] bottom-[80px] -translate-x-1/2 translate-y-1/2 w-24 h-24 rounded-full border-2 border-white/20 bg-white/5 pointer-events-none flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full border border-white/10 bg-white/5" />
+              </div>
+            )}
+          </div>
+
+          {/* Look Zone (Right) */}
+          <div 
+            ref={lookJoystickRef} 
+            className="absolute bottom-0 right-0 w-1/2 h-full pointer-events-auto z-20" 
+          >
+            {joystickMode === 'static' && (
+              <div className="absolute right-[80px] bottom-[80px] translate-x-1/2 translate-y-1/2 w-24 h-24 rounded-full border-2 border-white/20 bg-white/5 pointer-events-none flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full border border-white/10 bg-white/5" />
+              </div>
+            )}
+          </div>
+        </>
       )}
 
       {/* Mobile Sprint Button (Left Side) */}
@@ -177,7 +223,7 @@ export default function App() {
       {/* Mobile Interaction Button (Right Side) */}
       {isMobile && !loading && !error && (
         <button 
-          className="absolute bottom-20 right-20 w-20 h-20 bg-white/20 backdrop-blur-md rounded-full border border-white/40 flex items-center justify-center active:scale-90 transition-transform z-30 shadow-lg"
+          className="absolute bottom-40 right-40 w-20 h-20 bg-white/20 backdrop-blur-md rounded-full border border-white/40 flex items-center justify-center active:scale-90 transition-transform z-30 shadow-lg"
           onClick={() => {
             if (engineRef.current) {
               engineRef.current.triggerInteraction();

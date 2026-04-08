@@ -51,5 +51,8 @@ export interface SceneConfig {
     groundColor: string;
     hdri?: string;
   };
+  ui?: {
+    joystickMode?: 'static' | 'dynamic';
+  };
   objects: SceneObject[];
 }

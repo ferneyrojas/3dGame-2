@@ -15,6 +15,9 @@
     "groundColor": "#333333",
     "hdri": "../assets/sky.hdr"
   },
+  "ui": {
+    "joystickMode": "static"
+  },
   "objects": [
     {
       "id": "scena1",
