@@ -12,6 +12,7 @@ export class ObjectManager {
   private scene: THREE.Scene;
   private eventManager: EventManager;
   private objects: Map<string, THREE.Object3D> = new Map();
+  private mixers: THREE.AnimationMixer[] = [];
   private raycaster = new THREE.Raycaster();
   private mouse = new THREE.Vector2();
 
@@ -127,7 +128,15 @@ export class ObjectManager {
 
   private loadFBX(path: string): Promise<THREE.Object3D> {
     return new Promise((resolve, reject) => {
-      this.fbxLoader.load(path, resolve, undefined, reject);
+      this.fbxLoader.load(path, (object) => {
+        if (object.animations && object.animations.length > 0) {
+          const mixer = new THREE.AnimationMixer(object);
+          const action = mixer.clipAction(object.animations[0]);
+          action.play();
+          this.mixers.push(mixer);
+        }
+        resolve(object);
+      }, undefined, reject);
     });
   }
 
@@ -172,8 +181,8 @@ export class ObjectManager {
     });
   }
 
-  handleInteraction(camera: THREE.Camera, engine: any) {
-    this.raycaster.setFromCamera(new THREE.Vector2(0, 0), camera); // Center of screen for pointer lock
+  handleInteraction(camera: THREE.Camera, engine: any, coords: { x: number, y: number } = { x: 0, y: 0 }) {
+    this.raycaster.setFromCamera(new THREE.Vector2(coords.x, coords.y), camera);
     const intersects = this.raycaster.intersectObjects(this.scene.children, true);
 
     if (intersects.length > 0) {
@@ -193,5 +202,11 @@ export class ObjectManager {
 
   getObject(id: string): THREE.Object3D | undefined {
     return this.objects.get(id);
+  }
+
+  updateAnimations(delta: number) {
+    for (const mixer of this.mixers) {
+      mixer.update(delta);
+    }
   }
 }

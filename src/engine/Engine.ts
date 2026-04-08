@@ -118,8 +118,8 @@ export class Engine {
     });
   }
 
-  public triggerInteraction() {
-    this.objectManager.handleInteraction(this.camera, this);
+  public triggerInteraction(coords?: { x: number, y: number }) {
+    this.objectManager.handleInteraction(this.camera, this, coords);
   }
 
   public requestPointerLock() {
@@ -137,6 +137,7 @@ export class Engine {
 
     const delta = this.clock.getDelta();
     this.playerController.update(delta);
+    this.objectManager.updateAnimations(delta);
 
     this.renderer.render(this.scene, this.camera);
   }

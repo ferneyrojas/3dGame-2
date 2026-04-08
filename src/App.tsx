@@ -202,6 +202,20 @@ export default function App() {
     // touchStart.current = { x: touch.clientX, y: touch.clientY };
   };
 
+  const handleTouchEnd = (e: any) => {
+    if (!isMobile || !engineRef.current || loading || error) return;
+    
+    // Only trigger if it was a quick tap and not on a UI element or joystick
+    const target = e.target as HTMLElement;
+    if (target.closest('button') || target.closest('.nipple')) return;
+
+    const touch = e.changedTouches[0];
+    const x = (touch.clientX / window.innerWidth) * 2 - 1;
+    const y = -(touch.clientY / window.innerHeight) * 2 + 1;
+    
+    engineRef.current.triggerInteraction({ x, y });
+  };
+
   console.log("Rendering App State:", { isMobile, engineReady, loading, error });
 
   return (
@@ -209,6 +223,7 @@ export default function App() {
       className="relative w-full h-screen bg-black overflow-hidden font-sans touch-none"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
       {/* Three.js Container */}
       <div ref={containerRef} className="w-full h-full" />
@@ -255,6 +270,20 @@ export default function App() {
           }}
         >
           <Zap className={`w-6 h-6 ${isFast ? 'text-yellow-200' : 'text-white'}`} />
+        </button>
+      )}
+
+      {/* Mobile Interaction Button (Right Side) */}
+      {isMobile && !loading && !error && (
+        <button 
+          className="absolute bottom-48 right-8 w-14 h-14 rounded-full border border-white/30 bg-white/10 flex items-center justify-center transition-all z-40 active:scale-90 active:bg-white/20"
+          onClick={() => {
+            if (engineRef.current) {
+              engineRef.current.triggerInteraction();
+            }
+          }}
+        >
+          <MousePointer2 className="w-6 h-6 text-white" />
         </button>
       )}
 
