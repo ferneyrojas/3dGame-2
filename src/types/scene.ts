@@ -29,6 +29,7 @@ export interface SceneObject {
   alpha?: number;
   visible: boolean;
   onClick?: string; // Name of the function to execute
+  onClickParams?: any; // Parameters for the function
   modelPath?: string; // For FBX, OBJ, DAE
   isSolid?: boolean; // For collision detection
   collider?: 'box' | 'sphere' | 'mesh' | 'compound';

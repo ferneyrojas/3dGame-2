@@ -5,7 +5,7 @@
 
 import * as THREE from 'three';
 
-export type GameEvent = (object: THREE.Object3D, engine: any) => void;
+export type GameEvent = (object: THREE.Object3D, engine: any, params?: any) => void;
 
 export class EventManager {
   private events: Map<string, GameEvent> = new Map();
@@ -41,7 +41,7 @@ export class EventManager {
   execute(name: string, object: THREE.Object3D, engine: any) {
     const event = this.events.get(name);
     if (event) {
-      event(object, engine);
+      event(object, engine, object.userData.onClickParams);
     } else {
       console.warn(`Event "${name}" not found`);
     }

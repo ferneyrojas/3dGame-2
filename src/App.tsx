@@ -8,6 +8,11 @@ import { Engine } from './engine/Engine';
 import { SceneConfig } from './types/scene';
 import { MousePointer2, Keyboard, Move, Zap, HelpCircle, X, Smartphone, Maximize2 } from 'lucide-react';
 import nipplejs from 'nipplejs';
+import * as Antd from 'antd';
+import 'antd/dist/reset.css';
+
+const { Modal, Carousel, Card } = Antd as any;
+const { Meta } = Card;
 
 export default function App() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -21,6 +26,11 @@ export default function App() {
   const [showInstructions, setShowInstructions] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isFast, setIsFast] = useState(false);
+  
+  // Modal State
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalData, setModalData] = useState<any>(null);
+  const [modalLoading, setModalLoading] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -68,6 +78,34 @@ export default function App() {
 
     loadScene();
   }, [isMobile]);
+
+  useEffect(() => {
+    if (engineReady && engineRef.current) {
+      engineRef.current.eventManager.register('openModal', async (_obj, _engine, params) => {
+        const fileName = params;
+        if (!fileName) return;
+
+        // Exit pointer lock to allow interaction with HTML modal
+        if (document.pointerLockElement) {
+          document.exitPointerLock();
+        }
+
+        setModalLoading(true);
+        setModalVisible(true);
+
+        try {
+          const response = await fetch(`/assets/json/${fileName}.json`);
+          if (!response.ok) throw new Error('Failed to load modal data');
+          const data = await response.json();
+          setModalData(data);
+        } catch (err) {
+          console.error(err);
+        } finally {
+          setModalLoading(false);
+        }
+      });
+    }
+  }, [engineReady]);
 
   // Handle Joystick initialization separately to ensure Ref is ready
   useEffect(() => {
@@ -347,6 +385,60 @@ export default function App() {
           </div>
         </>
       )}
+
+      {/* Ant Design Modal */}
+      <Modal
+        title={modalData?.mainTitle || 'Cargando...'}
+        open={modalVisible}
+        onCancel={() => {
+          setModalVisible(false);
+          // Return focus to the 3D scene if on desktop
+          if (!isMobile && engineRef.current) {
+            engineRef.current.requestPointerLock();
+          }
+        }}
+        footer={null}
+        width={800}
+        centered
+        destroyOnClose
+        className="custom-modal"
+      >
+        {modalLoading ? (
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+          </div>
+        ) : (
+          <div className="py-4">
+            <p className="text-gray-600 mb-6 text-center">{modalData?.description}</p>
+            <Carousel arrows infinite={false} dotPosition="bottom">
+              {modalData?.items?.map((item: any) => (
+                <div key={item.id} className="px-2">
+                  <Card
+                    hoverable
+                    cover={
+                      <img 
+                        alt={item.title} 
+                        src={item.image} 
+                        className="h-64 object-cover"
+                        referrerPolicy="no-referrer"
+                      />
+                    }
+                  >
+                    <Meta 
+                      title={item.title} 
+                      description={
+                        <div className="mt-2">
+                          <p className="text-gray-700">{item.content}</p>
+                        </div>
+                      } 
+                    />
+                  </Card>
+                </div>
+              ))}
+            </Carousel>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }

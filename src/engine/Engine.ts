@@ -17,7 +17,7 @@ export class Engine {
   private renderer: THREE.WebGLRenderer;
   private clock: THREE.Clock;
 
-  private eventManager: EventManager;
+  public eventManager: EventManager;
   private physicsSystem: PhysicsSystem;
   public playerController: PlayerController;
   private objectManager: ObjectManager;
@@ -120,6 +120,10 @@ export class Engine {
 
   public triggerInteraction() {
     this.objectManager.handleInteraction(this.camera, this);
+  }
+
+  public requestPointerLock() {
+    this.renderer.domElement.requestPointerLock();
   }
 
   private onWindowResize() {

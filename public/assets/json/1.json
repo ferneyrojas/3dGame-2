@@ -1,0 +1,55 @@
+{
+  "mainTitle": "Explorador de Continentes",
+  "description": "Descubre la riqueza geográfica y cultural de nuestro planeta a través de esta guía interactiva.",
+  "columns": 3,
+  "items": [
+    {
+      "id": "africa",
+      "label": "África",
+      "title": "África: Cuna de la Humanidad",
+      "content": "África es el tercer continente más extenso del mundo. Es conocido por su vasta biodiversidad, el desierto del Sahara y el río Nilo. Alberga una inmensa diversidad cultural con más de 2,000 lenguas distintas.",
+      "image": "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?q=80&w=1000&auto=format&fit=crop",
+      "thumbnail": "https://images.unsplash.com/photo-1523805081730-6144a778a997?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      "id": "america",
+      "label": "América",
+      "title": "América: El Continente del Contraste",
+      "content": "Desde el Ártico hasta la Patagonia, América ofrece todos los climas del mundo. Se divide en Norte, Centro y Sur, albergando maravillas como el Amazonas y las Montañas Rocosas.",
+      "image": "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?q=80&w=1000&auto=format&fit=crop",
+      "thumbnail": "https://images.unsplash.com/photo-1475503572774-15a45e5d60b9?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      "id": "asia",
+      "label": "Asia",
+      "title": "Asia: El Gigante de Oriente",
+      "content": "Es el continente más grande y poblado de la Tierra. Contiene el punto más alto del mundo, el Monte Everest, y civilizaciones milenarias que han dado forma a la historia moderna.",
+      "image": "https://images.unsplash.com/photo-1464817739973-0128fe77aaa1?q=80&w=1000&auto=format&fit=crop",
+      "thumbnail": "https://images.unsplash.com/photo-1528164344705-47542687000d?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      "id": "europa",
+      "label": "Europa",
+      "title": "Europa: Historia y Cultura",
+      "content": "Europa es conocida por su rica herencia histórica, artística y política. A pesar de su tamaño reducido, ha tenido una influencia global masiva a través de los siglos.",
+      "image": "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?q=80&w=1000&auto=format&fit=crop",
+      "thumbnail": "https://images.unsplash.com/photo-1491557345352-5929e343eb89?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      "id": "oceania",
+      "label": "Oceanía",
+      "title": "Oceanía: El Continente Insular",
+      "content": "Compuesto por Australia, Nueva Zelanda y miles de islas en el Pacífico. Es famoso por sus arrecifes de coral, paisajes únicos y especies animales que no se encuentran en ningún otro lugar.",
+      "image": "https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?q=80&w=1000&auto=format&fit=crop",
+      "thumbnail": "https://images.unsplash.com/photo-1529108190281-9a4f620bc2d8?q=80&w=400&auto=format&fit=crop"
+    },
+    {
+      "id": "antartida",
+      "label": "Antártida",
+      "title": "Antártida: El Continente Blanco",
+      "content": "El lugar más frío, seco y ventoso de la Tierra. Es un territorio dedicado a la ciencia y la paz, cubierto casi por completo por una gruesa capa de hielo.",
+      "image": "https://images.unsplash.com/photo-1473580044384-7ba9967e16a0?q=80&w=1000&auto=format&fit=crop",
+      "thumbnail": "https://images.unsplash.com/photo-1516912481808-34061f8e630c?q=80&w=400&auto=format&fit=crop"
+    }
+  ]
+}

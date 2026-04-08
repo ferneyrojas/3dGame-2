@@ -74,6 +74,7 @@ export class ObjectManager {
     object.name = config.name || config.id;
     object.userData.id = config.id;
     object.userData.onClick = config.onClick;
+    object.userData.onClickParams = config.onClickParams;
 
     // Apply texture/color to all meshes in the object (useful for models)
     if (config.texture || config.color) {
