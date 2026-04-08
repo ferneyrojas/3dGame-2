@@ -6,7 +6,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Engine } from './engine/Engine';
 import { SceneConfig } from './types/scene';
-import { MousePointer2, Keyboard, Move, Zap, HelpCircle, X, Smartphone } from 'lucide-react';
+import { MousePointer2, Keyboard, Move, Zap, HelpCircle, X, Smartphone, Maximize2 } from 'lucide-react';
 import nipplejs from 'nipplejs';
 
 export default function App() {
@@ -18,7 +18,7 @@ export default function App() {
   const [engineReady, setEngineReady] = useState(false);
   const [joystickMode, setJoystickMode] = useState<'static' | 'dynamic'>('static');
   const [error, setError] = useState<string | null>(null);
-  const [showInstructions, setShowInstructions] = useState(true);
+  const [showInstructions, setShowInstructions] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isFast, setIsFast] = useState(false);
 
@@ -220,20 +220,6 @@ export default function App() {
         </button>
       )}
 
-      {/* Mobile Interaction Button (Right Side) */}
-      {isMobile && !loading && !error && (
-        <button 
-          className="absolute bottom-40 right-40 w-20 h-20 bg-white/20 backdrop-blur-md rounded-full border border-white/40 flex items-center justify-center active:scale-90 transition-transform z-30 shadow-lg"
-          onClick={() => {
-            if (engineRef.current) {
-              engineRef.current.triggerInteraction();
-            }
-          }}
-        >
-          <MousePointer2 className="w-8 h-8 text-white" />
-        </button>
-      )}
-
       {/* Loading Overlay */}
       {loading && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/80 z-50">
@@ -254,14 +240,34 @@ export default function App() {
       {/* UI Overlay */}
       {!loading && !error && (
         <>
-          {/* Toggle Instructions Button */}
-          <button
-            onClick={() => setShowInstructions(!showInstructions)}
-            className="absolute top-6 right-6 p-3 bg-black/40 backdrop-blur-md rounded-full border border-white/10 text-white z-40 hover:bg-black/60 transition-all active:scale-95"
-            title={showInstructions ? "Ocultar instrucciones" : "Mostrar instrucciones"}
-          >
-            {showInstructions ? <X className="w-5 h-5" /> : <HelpCircle className="w-5 h-5" />}
-          </button>
+          {/* Top Right Controls */}
+          <div className="absolute top-6 right-6 flex gap-3 z-40">
+            {/* Fullscreen Button */}
+            <button
+              onClick={() => {
+                if (!document.fullscreenElement) {
+                  document.documentElement.requestFullscreen().catch(err => {
+                    console.error(`Error attempting to enable full-screen mode: ${err.message}`);
+                  });
+                } else {
+                  document.exitFullscreen();
+                }
+              }}
+              className="p-3 bg-black/40 backdrop-blur-md rounded-full border border-white/10 text-white hover:bg-black/60 transition-all active:scale-95"
+              title="Pantalla completa"
+            >
+              <Maximize2 className="w-5 h-5" />
+            </button>
+
+            {/* Toggle Instructions Button */}
+            <button
+              onClick={() => setShowInstructions(!showInstructions)}
+              className="p-3 bg-black/40 backdrop-blur-md rounded-full border border-white/10 text-white hover:bg-black/60 transition-all active:scale-95"
+              title={showInstructions ? "Ocultar instrucciones" : "Mostrar instrucciones"}
+            >
+              {showInstructions ? <X className="w-5 h-5" /> : <HelpCircle className="w-5 h-5" />}
+            </button>
+          </div>
 
           {/* Instructions Panel */}
           {showInstructions && (
