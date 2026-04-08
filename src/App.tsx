@@ -44,29 +44,6 @@ export default function App() {
         if (containerRef.current && !engineRef.current) {
           engineRef.current = new Engine(containerRef.current, config);
           setLoading(false);
-          
-          if (isMobile && joystickRef.current) {
-            const manager = nipplejs.create({
-              zone: joystickRef.current,
-              mode: 'static',
-              position: { left: '80px', bottom: '80px' },
-              color: 'white',
-              size: 120
-            });
-
-            (manager as any).on('move', (_: any, data: any) => {
-              if (engineRef.current && data.vector) {
-                // Pass raw joystick vector: x is horizontal, y is vertical
-                engineRef.current.playerController.setExternalMove(data.vector.x, data.vector.y);
-              }
-            });
-
-            manager.on('end', () => {
-              if (engineRef.current) {
-                engineRef.current.playerController.setExternalMove(0, 0);
-              }
-            });
-          }
         }
       } catch (err) {
         console.error(err);
@@ -77,6 +54,40 @@ export default function App() {
 
     loadScene();
   }, [isMobile]);
+
+  // Handle Joystick initialization separately to ensure Ref is ready
+  useEffect(() => {
+    let manager: any = null;
+
+    if (!loading && isMobile && joystickRef.current && engineRef.current) {
+      manager = nipplejs.create({
+        zone: joystickRef.current,
+        mode: 'static',
+        position: { left: '80px', bottom: '80px' },
+        color: 'white',
+        size: 120,
+        threshold: 0.1
+      });
+
+      manager.on('move', (_: any, data: any) => {
+        if (engineRef.current && data.vector) {
+          // NippleJS vector.y is positive when moving UP
+          // PlayerController expects positive for Forward
+          engineRef.current.playerController.setExternalMove(data.vector.x, data.vector.y);
+        }
+      });
+
+      manager.on('end', () => {
+        if (engineRef.current) {
+          engineRef.current.playerController.setExternalMove(0, 0);
+        }
+      });
+    }
+
+    return () => {
+      if (manager) manager.destroy();
+    };
+  }, [loading, isMobile]);
 
   // Touch look handling
   const touchStart = useRef({ x: 0, y: 0 });

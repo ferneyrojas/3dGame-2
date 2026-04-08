@@ -126,8 +126,9 @@ export class PlayerController {
     const moveZ = (Number(this.moveForward) - Number(this.moveBackward)) + this.externalMoveZ;
     const moveX = (Number(this.moveRight) - Number(this.moveLeft)) + this.externalMoveX;
 
-    // In our engine, forward is -Z, so we negate moveZ for the direction
-    this.direction.z = -moveZ;
+    // In Three.js, forward is -Z. 
+    // If moveZ is positive (forward), we want to move towards -Z.
+    this.direction.z = moveZ; 
     this.direction.x = moveX;
     
     // Apply external rotation
