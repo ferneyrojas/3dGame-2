@@ -70,7 +70,7 @@ export default function App() {
       });
 
       manager.on('move', (_: any, data: any) => {
-        if (engineRef.current && data.vector) {
+        if (engineRef.current && data && data.vector) {
           // NippleJS vector.y is positive when moving UP
           // PlayerController expects positive for Forward
           engineRef.current.playerController.setExternalMove(data.vector.x, data.vector.y);
@@ -92,11 +92,13 @@ export default function App() {
   // Touch look handling
   const touchStart = useRef({ x: 0, y: 0 });
   const handleTouchStart = (e: any) => {
-    touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    if (e.touches && e.touches[0]) {
+      touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }
   };
 
   const handleTouchMove = (e: any) => {
-    if (!engineRef.current) return;
+    if (!engineRef.current || !e.touches || !e.touches[0]) return;
     
     const touch = e.touches[0];
     const deltaX = touch.clientX - touchStart.current.x;
