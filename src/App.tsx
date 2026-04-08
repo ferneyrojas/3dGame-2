@@ -128,7 +128,7 @@ export default function App() {
             if (engineRef.current && lookData && lookData.vector) {
               // NippleJS vector.y is positive when moving UP
               // We want to rotate camera around X axis (pitch)
-              engineRef.current.playerController.setJoystickLook(lookData.vector.x, lookData.vector.y);
+              engineRef.current.playerController.setJoystickLook(lookData.vector.x, -lookData.vector.y);
             }
           });
 

@@ -134,13 +134,21 @@ export class PlayerController {
     this.direction.x = moveX;
     
     // Apply external rotation
-    const lookX = this.externalLookX + (this.joystickLookX * delta * 15);
-    const lookY = this.externalLookY + (this.joystickLookY * delta * 15);
+    // Reduced joystick sensitivity: multiplier changed from 15 to 8
+    const lookX = this.externalLookX + (this.joystickLookX * delta * 8);
+    const lookY = this.externalLookY + (this.joystickLookY * delta * 8);
 
     if (lookX !== 0 || lookY !== 0) {
-      this.yaw -= lookX * 0.2;
-      this.pitch -= lookY * 0.2;
-      this.pitch = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, this.pitch));
+      // Reduced overall sensitivity: multiplier changed from 0.2 to 0.1
+      this.yaw -= lookX * 0.1;
+      this.pitch -= lookY * 0.1;
+      
+      // Restrict pitch: -60 degrees (up) to 30 degrees (down)
+      // -60 deg = -PI/3, 30 deg = PI/6
+      const minPitch = -Math.PI / 3; // 60 degrees up
+      const maxPitch = Math.PI / 6;  // 30 degrees down
+      this.pitch = Math.max(minPitch, Math.min(maxPitch, this.pitch));
+      
       this.camera.rotation.order = 'YXZ';
       this.camera.rotation.set(this.pitch, this.yaw, 0);
       
