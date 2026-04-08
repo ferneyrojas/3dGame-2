@@ -14,6 +14,7 @@ export default function App() {
   const engineRef = useRef<Engine | null>(null);
   const joystickRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(true);
+  const [engineReady, setEngineReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showInstructions, setShowInstructions] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
@@ -21,7 +22,13 @@ export default function App() {
 
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768);
+      const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      const isSmallScreen = window.innerWidth < 1024;
+      const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      
+      const mobileResult = isMobileUA || hasTouch || isSmallScreen;
+      setIsMobile(mobileResult);
+      console.log("Check mobile result:", mobileResult, { isMobileUA, hasTouch, isSmallScreen, width: window.innerWidth });
     };
     checkMobile();
     window.addEventListener('resize', checkMobile);
@@ -43,6 +50,7 @@ export default function App() {
 
         if (containerRef.current && !engineRef.current) {
           engineRef.current = new Engine(containerRef.current, config);
+          setEngineReady(true);
           setLoading(false);
         }
       } catch (err) {
@@ -59,35 +67,54 @@ export default function App() {
   useEffect(() => {
     let manager: any = null;
 
-    if (!loading && isMobile && joystickRef.current && engineRef.current) {
-      manager = nipplejs.create({
-        zone: joystickRef.current,
-        mode: 'static',
-        position: { left: '80px', bottom: '80px' },
-        color: 'white',
-        size: 120,
-        threshold: 0.1
-      });
+    console.log("Joystick Effect Check:", { 
+      engineReady, 
+      isMobile, 
+      hasJoystickRef: !!joystickRef.current, 
+      hasEngineRef: !!engineRef.current 
+    });
 
-      manager.on('move', (_: any, data: any) => {
-        if (engineRef.current && data && data.vector) {
-          // NippleJS vector.y is positive when moving UP
-          // PlayerController expects positive for Forward
-          engineRef.current.playerController.setExternalMove(data.vector.x, data.vector.y);
-        }
-      });
+    if (engineReady && isMobile && joystickRef.current && engineRef.current) {
+      console.log("Initializing NippleJS...");
+      try {
+        manager = nipplejs.create({
+          zone: joystickRef.current,
+          mode: 'dynamic',
+          color: 'white',
+          size: 100,
+          threshold: 0.1,
+          catchDistance: 150
+        });
 
-      manager.on('end', () => {
-        if (engineRef.current) {
-          engineRef.current.playerController.setExternalMove(0, 0);
-        }
-      });
+        console.log("NippleJS Manager Created successfully");
+
+        manager.on('move', (evt: any, data: any) => {
+          // Some versions of nipplejs pass data as second arg, others as evt.data
+          const moveData = data || evt.data;
+          
+          if (engineRef.current && moveData && moveData.vector) {
+            // NippleJS vector.y is positive when moving UP
+            // PlayerController expects positive for Forward
+            engineRef.current.playerController.setExternalMove(moveData.vector.x, moveData.vector.y);
+          }
+        });
+
+        manager.on('end', () => {
+          if (engineRef.current) {
+            engineRef.current.playerController.setExternalMove(0, 0);
+          }
+        });
+      } catch (e) {
+        console.error("Error creating NippleJS manager:", e);
+      }
     }
 
     return () => {
-      if (manager) manager.destroy();
+      if (manager) {
+        manager.destroy();
+      }
     };
-  }, [loading, isMobile]);
+  }, [engineReady, isMobile]);
 
   // Touch look handling
   const touchStart = useRef({ x: 0, y: 0 });
@@ -112,6 +139,8 @@ export default function App() {
     touchStart.current = { x: touch.clientX, y: touch.clientY };
   };
 
+  console.log("Rendering App State:", { isMobile, engineReady, loading, error });
+
   return (
     <div 
       className="relative w-full h-screen bg-black overflow-hidden font-sans touch-none"
@@ -122,13 +151,11 @@ export default function App() {
       <div ref={containerRef} className="w-full h-full" />
 
       {/* Mobile Joystick Zone */}
-      {isMobile && !loading && !error && (
-        <div ref={joystickRef} className="absolute bottom-0 left-0 w-1/2 h-1/2 pointer-events-auto z-30">
-          {/* Visual guide for the joystick area */}
-          <div className="absolute left-[80px] bottom-[80px] -translate-x-1/2 translate-y-1/2 w-24 h-24 rounded-full border-2 border-white/20 bg-white/5 pointer-events-none flex items-center justify-center">
-            <div className="w-8 h-8 rounded-full border border-white/10 bg-white/5" />
-          </div>
-        </div>
+      {isMobile && engineReady && !error && (
+        <div 
+          ref={joystickRef} 
+          className="absolute bottom-0 left-0 w-1/2 h-1/2 pointer-events-auto z-20" 
+        />
       )}
 
       {/* Mobile Sprint Button (Left Side) */}

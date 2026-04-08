@@ -1,6 +1,6 @@
 {
   "player": {
-    "startPosition": { "x": 0, "y": 2, "z": 5 },
+    "startPosition": { "x": 5, "y": 2, "z": 5 },
     "height": 2,
     "moveSpeed": 7.5,
     "fastMoveSpeed": 15.0

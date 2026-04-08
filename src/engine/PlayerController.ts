@@ -133,8 +133,8 @@ export class PlayerController {
     
     // Apply external rotation
     if (this.externalLookX !== 0 || this.externalLookY !== 0) {
-      this.yaw -= this.externalLookX * 0.05;
-      this.pitch -= this.externalLookY * 0.05;
+      this.yaw -= this.externalLookX * 0.2;
+      this.pitch -= this.externalLookY * 0.2;
       this.pitch = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, this.pitch));
       this.camera.rotation.order = 'YXZ';
       this.camera.rotation.set(this.pitch, this.yaw, 0);
