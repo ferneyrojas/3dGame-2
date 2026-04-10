@@ -1,0 +1,151 @@
+{
+  "player": {
+    "startPosition": {
+      "x": 0,
+      "y": 1.7,
+      "z": 0
+    },
+    "height": 1.7,
+    "moveSpeed": 5.0,
+    "fastMoveSpeed": 10.0
+  },
+  "world": {
+    "size": {
+      "width": 200,
+      "depth": 200
+    },
+    "gravity": 9.8,
+    "skyColor": "#87CEEB",
+    "groundColor": "#333333",
+    "hdri": "../assets/sky.hdr"
+  },
+  "objects": [
+    {
+      "id": "ground",
+      "type": "plane",
+      "name": "Ground",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": -1.57,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 100,
+        "y": 100,
+        "z": 1
+      },
+      "color": "#444444",
+      "texture": "../assets/textures/grass.jpg",
+      "visible": true,
+      "isSolid": true,
+      "collider": "mesh"
+    },
+    {
+      "id": "tree1",
+      "type": "obj",
+      "name": "tree1",
+      "position": {
+        "x": -5,
+        "y": 0,
+        "z": -5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "color": "#804000",
+      "visible": true,
+      "isSolid": true,
+      "collider": "mesh",
+      "onClick": "rotateSelf",
+      "modelPath": "../assets/objs/tree.obj"
+    },
+    {
+      "id": "roca1",
+      "type": "obj",
+      "name": "roca1",
+      "position": {
+        "x": 10,
+        "y": 6,
+        "z": -12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 3,
+        "y": 5,
+        "z": 3
+      },
+      "visible": true,
+      "isSolid": true,
+      "collider": "mesh",
+      "onClick": "openModal",
+      "onClickParams": "1",
+      "texture": "../assets/objs/textures/Rock_4a.jpg",
+      "modelPath": "../assets/objs/Rock_4.obj"
+    },
+    {
+      "id": "scena1",
+      "type": "fbx",
+      "name": "scena1",
+      "position": {
+        "x": 0,
+        "y": 2,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 0.04,
+        "y": 0.04,
+        "z": 0.04
+      },
+      "color": "#444444",
+      "visible": false,
+      "isSolid": true,
+      "collider": "mesh",
+      "modelPath": "../assets/objs/laboratorio/low-poly-laboratory/source/GameRadyLab.fbx"
+    },
+    {
+      "id": "scena1",
+      "type": "glb",
+      "name": "scena1",
+      "position": {
+        "x": 0,
+        "y": 1.25,
+        "z": -8
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 3,
+        "y": 3,
+        "z": 3
+      },
+      "visible": true,
+      "isSolid": true,
+      "collider": "mesh",
+      "modelPath": "../assets/objs/laboratorio/low-poly_laboratory.glb"
+    }
+  ]
+}
