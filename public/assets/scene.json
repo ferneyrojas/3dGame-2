@@ -1,9 +1,13 @@
 {
   "player": {
-    "startPosition": { "x": 10, "y": 1.7, "z": 5 },
+    "startPosition": {
+      "x": 10,
+      "y": 5,
+      "z": 0
+    },
     "height": 1.7,
-    "moveSpeed": 5.0,
-    "fastMoveSpeed": 10.0
+    "moveSpeed": 2.5,
+    "fastMoveSpeed": 5.0
   },
   "world": {
     "size": {
@@ -20,9 +24,21 @@
       "id": "ground",
       "type": "plane",
       "name": "Ground",
-      "position": { "x": 0, "y": 0, "z": 0 },
-      "rotation": { "x": -1.57, "y": 0, "z": 0 },
-      "scale": { "x": 100, "y": 100, "z": 1 },
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": -1.57,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 100,
+        "y": 100,
+        "z": 1
+      },
       "color": "#444444",
       "texture": "../assets/textures/grass.jpg",
       "visible": true,
@@ -33,9 +49,21 @@
       "id": "box1",
       "type": "box",
       "name": "Interactive Box",
-      "position": { "x": 2, "y": 0.5, "z": -2 },
-      "rotation": { "x": 0, "y": 0, "z": 0 },
-      "scale": { "x": 1, "y": 1, "z": 1 },
+      "position": {
+        "x": 2,
+        "y": 0.5,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
       "color": "#ff0000",
       "visible": true,
       "isSolid": true,
@@ -45,9 +73,21 @@
       "id": "box2",
       "type": "box",
       "name": "Moving Box",
-      "position": { "x": -2, "y": 0.5, "z": -2 },
-      "rotation": { "x": 0, "y": 0, "z": 0 },
-      "scale": { "x": 1, "y": 1, "z": 1 },
+      "position": {
+        "x": -2,
+        "y": 0.5,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
       "color": "#00ff00",
       "visible": true,
       "isSolid": true,
@@ -57,23 +97,47 @@
       "id": "tree1",
       "type": "obj",
       "name": "tree1",
-      "position": { "x": -5, "y": 0, "z": -5 },
-      "rotation": { "x": 0, "y": 0, "z": 0 },
-      "scale": { "x": 1, "y": 1, "z": 1 },
+      "position": {
+        "x": -5,
+        "y": 0,
+        "z": -5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
       "color": "#804000",
       "visible": true,
       "isSolid": true,
       "collider": "mesh",
       "onClick": "rotateSelf",
       "modelPath": "../assets/objs/tree.obj"
-    },  
+    },
     {
       "id": "roca1",
       "type": "obj",
       "name": "roca1",
-      "position": { "x": 10, "y": 6, "z": -12 },
-      "rotation": { "x": 0, "y": 0, "z": 0 },
-      "scale": { "x": 3, "y": 5, "z": 3 },
+      "position": {
+        "x": 10,
+        "y": 6,
+        "z": -12
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 3,
+        "y": 5,
+        "z": 3
+      },
       "visible": true,
       "isSolid": true,
       "collider": "mesh",
@@ -84,15 +148,27 @@
     },
     {
       "id": "scena1",
-      "type": "fbx",
+      "type": "glb",
       "name": "scena1",
-      "position": { "x": 0, "y": 5, "z": 0 },
-      "rotation": { "x": 0, "y": 0, "z": 0 },
-      "scale": { "x": 1, "y": 1, "z": 1 },
+      "position": {
+        "x": 7,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 0.025,
+        "y": 0.025,
+        "z": 0.025
+      },
       "visible": true,
       "isSolid": true,
       "collider": "mesh",
-      "modelPath": "../assets/objs/medieval-fantasy-book/source/TEST2.fbx"
-    }    
+      "modelPath": "../assets/objs/metallic-showroom-gallery/source/gallery_showroom.glb"
+    }
   ]
 }
