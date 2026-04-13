@@ -39,3 +39,12 @@ export interface SceneObject {
 
 onClick recibe un nombre de function
 onClickParams recibe un parámetro de la función usado en el registro de la misma
+
+
+Por Hacer
+
+- Mover Objs
+- Cargar otras scenas de forma dinamica para cambair de scenarios
+- Conf atributo para no moverse
+- Crear método para eliminar obj de scena, por ejemplo una puerta
+- Crear métodos de mover objs al dar clic sobre un obj
