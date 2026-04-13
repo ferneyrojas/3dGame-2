@@ -1,0 +1,121 @@
+{
+  "player": {
+    "startPosition": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "height": 0.25,
+    "moveSpeed": 7.5,
+    "fastMoveSpeed": 15.0
+  },
+  "world": {
+    "size": {
+      "width": 500,
+      "depth": 500
+    },
+    "gravity": 9.8,
+    "skyColor": "#87CEEB",
+    "groundColor": "#333333",
+    "hdri": "../assets/sky.hdr"
+  },
+  "objects": [
+    {
+      "id": "ground",
+      "type": "plane",
+      "name": "Ground",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": -1.57,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 100,
+        "y": 100,
+        "z": 1
+      },
+      "color": "#444444",
+      "texture": "../assets/textures/grass.jpg",
+      "visible": false,
+      "isSolid": true,
+      "collider": "mesh"
+    },
+    {
+      "id": "box1",
+      "type": "box",
+      "name": "Interactive Box",
+      "position": {
+        "x": 2,
+        "y": 0.5,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "color": "#ff00ff",
+      "visible": true,
+      "isSolid": true,
+      "onClick": "toggleVisibility"
+    },
+    {
+      "id": "box2",
+      "type": "box",
+      "name": "Moving Box",
+      "position": {
+        "x": -2,
+        "y": 0.5,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "color": "#00ff00",
+      "visible": true,
+      "isSolid": true,
+      "onClick": "rotateSelf"
+    },
+    {
+      "id": "scena1",
+      "type": "glb",
+      "name": "scena1",
+      "position": {
+        "x": 20,
+        "y": 65,
+        "z": 0
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 1.5,
+        "y": 1.5,
+        "z": 1.5
+      },
+      "visible": true,
+      "isSolid": true,
+      "collider": "mesh",
+      "modelPath": "../assets/objs/western/western.glb"
+    }
+  ]
+}

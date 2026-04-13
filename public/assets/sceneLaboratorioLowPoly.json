@@ -2,12 +2,12 @@
   "player": {
     "startPosition": {
       "x": 0,
-      "y": 1.7,
+      "y": 0.5,
       "z": 0
     },
-    "height": 1.7,
-    "moveSpeed": 5.0,
-    "fastMoveSpeed": 10.0
+    "height": 1,
+    "moveSpeed": 20.0,
+    "fastMoveSpeed": 30.0
   },
   "world": {
     "size": {
@@ -97,31 +97,6 @@
       "onClickParams": "1",
       "texture": "../assets/objs/textures/Rock_4a.jpg",
       "modelPath": "../assets/objs/Rock_4.obj"
-    },
-    {
-      "id": "scena1",
-      "type": "fbx",
-      "name": "scena1",
-      "position": {
-        "x": 0,
-        "y": 2,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "scale": {
-        "x": 0.04,
-        "y": 0.04,
-        "z": 0.04
-      },
-      "color": "#444444",
-      "visible": false,
-      "isSolid": true,
-      "collider": "mesh",
-      "modelPath": "../assets/objs/laboratorio/low-poly-laboratory/source/GameRadyLab.fbx"
     },
     {
       "id": "scena1",
