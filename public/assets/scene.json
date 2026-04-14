@@ -145,30 +145,6 @@
       "onClickParams": "1",
       "texture": "../assets/objs/textures/Rock_4a.jpg",
       "modelPath": "../assets/objs/Rock_4.obj"
-    },
-    {
-      "id": "scena1",
-      "type": "glb",
-      "name": "scena1",
-      "position": {
-        "x": 7,
-        "y": 0,
-        "z": 0
-      },
-      "rotation": {
-        "x": 0,
-        "y": 0,
-        "z": 0
-      },
-      "scale": {
-        "x": 0.025,
-        "y": 0.025,
-        "z": 0.025
-      },
-      "visible": true,
-      "isSolid": true,
-      "collider": "mesh",
-      "modelPath": "../assets/objs/metallic-showroom-gallery/source/gallery_showroom.glb"
     }
   ]
 }
